@@ -1,0 +1,26 @@
+User-agent: *
+Allow: /
+
+# Disallow sensitive directories
+Disallow: /includes/
+Disallow: /logs/
+Disallow: /data/
+Disallow: /admin/
+Disallow: /backup/
+Disallow: /tmp/
+
+# Disallow specific files
+Disallow: /.htaccess
+Disallow: /database.sql
+Disallow: *.log$
+
+# Allow important files
+Allow: /assets/
+Allow: /index.html
+Allow: /sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://labagua.com.br/sitemap.xml
