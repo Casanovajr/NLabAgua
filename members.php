@@ -115,19 +115,37 @@
             <div class="container">
                 <?php
                 try {
-    // Usar a configuração da pasta admin
-    require_once "admin/config.php";
-                    
-                    $sql = "SELECT * FROM membros WHERE status = 'aprovado' ORDER BY nome ASC";
+                    require_once "admin/functions/db.php";
+                    // Buscar todos os membros (ordem: aprovados primeiro). Se falhar (coluna 'status' ausente), usa fallback por nome.
+                    $hasStatus = true;
+                    $sql = "SELECT id, nome, cargo, especialidade, lattes, foto, status FROM membros ORDER BY status = 'aprovado' DESC, nome ASC";
                     $result = mysqli_query($connection, $sql);
+                    if ($result === false) {
+                        $hasStatus = false;
+                        $sql = "SELECT id, nome, cargo, especialidade, lattes, foto FROM membros ORDER BY nome ASC";
+                        $result = mysqli_query($connection, $sql);
+                    }
+                    // Debug não intrusivo (comentário HTML): contagem de registros e erro da consulta, se houver
+                    $count_debug = mysqli_query($connection, "SELECT COUNT(*) AS c FROM membros");
+                    $count_row = $count_debug ? mysqli_fetch_assoc($count_debug) : null;
+                    echo '<!-- membros: count=' . htmlspecialchars($count_row['c'] ?? 'n/a') . ' | hasStatus=' . ($hasStatus ? '1' : '0') . ' | last_sql_error=' . htmlspecialchars(mysqli_error($connection)) . ' -->';
                 } catch (Exception $e) {
                     $result = false;
+                    $hasStatus = false;
                 }
                 ?>
                 
                 <div class="members-grid" data-aos="fade-up" data-aos-delay="100">
                     <?php
-                    if ($result && mysqli_num_rows($result) == 0) {
+                    if ($result === false) {
+                        echo '<div class="col-12 text-center" style="grid-column: 1 / -1;">
+                                <div class="empty-state">
+                                    <i class="fas fa-database" style="font-size: 4rem; color: var(--gray-400); margin-bottom: var(--spacing-4);"></i>
+                                    <h3 style="color: var(--gray-600); margin-bottom: var(--spacing-2);">Não foi possível carregar os membros</h3>
+                                    <p style="color: var(--gray-500);">Verifique se a tabela <strong>membros</strong> existe e contém dados (consulte o comentário HTML de debug no código-fonte).</p>
+                                </div>
+                              </div>';
+                    } else if ($result && mysqli_num_rows($result) == 0) {
                         echo '<div class="col-12 text-center" style="grid-column: 1 / -1;">
                                 <div class="empty-state">
                                     <i class="fas fa-users" style="font-size: 4rem; color: var(--gray-400); margin-bottom: var(--spacing-4);"></i>
@@ -166,13 +184,18 @@
                         if ($result && mysqli_num_rows($result) > 0) {
                             while ($row = mysqli_fetch_assoc($result)) {
                                 $members_displayed = true;
-                                $photo_src = $row['foto'] ? 'data:image/jpeg;base64,' . base64_encode($row['foto']) : 'assets/images/default-avatar.jpg';
+                                $photo_src = !empty($row['foto']) ? 'data:image/jpeg;base64,' . base64_encode($row['foto']) : 'assets/images/default-avatar.jpg';
+                                $status_badge = '';
+                                if ($hasStatus && !empty($row['status']) && $row['status'] !== 'aprovado') {
+                                    $label = $row['status'] === 'pendente' ? 'Pendente' : ($row['status'] === 'rejeitado' ? 'Rejeitado' : $row['status']);
+                                    $status_badge = '<span class="badge" style="margin-left:8px; background: var(--gray-200); color: var(--gray-700); padding: 2px 6px; border-radius: 999px; font-size: 12px; vertical-align: middle;">' . htmlspecialchars(ucfirst($label)) . '</span>';
+                                }
                                 
                                 echo '<div class="member-card">
                                         <div class="member-photo">
                                             <img src="' . $photo_src . '" alt="' . htmlspecialchars($row['nome']) . '">
                                         </div>
-                                        <h3 class="member-name">' . htmlspecialchars($row['nome']) . '</h3>
+                                        <h3 class="member-name">' . htmlspecialchars($row['nome']) . $status_badge . '</h3>
                                         <p class="member-position">' . htmlspecialchars($row['cargo']) . '</p>
                                         <div class="member-links">
                                             <a href="' . htmlspecialchars($row['lattes']) . '" class="member-link" target="_blank">

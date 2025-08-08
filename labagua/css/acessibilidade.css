@@ -1,0 +1,204 @@
+.high-contrast {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.high-contrast a {
+  color: #fff !important;
+}
+
+.dark-mode {
+  background-color: #1a1a1a !important;
+  color: #e0e0e0 !important;
+}
+
+.dark-mode a {
+  color: #e0e0e0 !important;
+}
+
+.accessibility-bar {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+  background-color: rgba(51, 51, 51, 0.9);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.accessibility-bar {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.accessibility-toggle {
+  background: rgba(51, 51, 51, 0.9);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.accessibility-bar button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.accessibility-bar button i {
+  font-size: 14px;
+}
+
+.accessibility-bar .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accessibility-links {
+  display: flex;
+  gap: 20px;
+}
+
+.accessibility-links a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.accessibility-tools {
+  display: none;
+  background: rgba(51, 51, 51, 0.9);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+}
+
+.accessibility-tools button {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+}
+
+.accessibility-tools button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.accessibility-tools button i {
+  font-size: 14px;
+}
+
+.accessibility-bar.expanded .accessibility-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Modo Alto Contraste */
+.high-contrast {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.high-contrast a {
+  color: #fff !important;
+}
+
+.high-contrast .navbar-default {
+  background-color: #000 !important;
+  border-color: #fff !important;
+}
+
+.high-contrast .navbar-default .navbar-nav>li>a {
+  color: #fff !important;
+}
+
+.high-contrast .team-card {
+  background-color: #000 !important;
+  color: #fff !important;
+  border: 1px solid #fff !important;
+}
+
+.high-contrast .lattes-link {
+  color: #fff !important;
+}
+
+.high-contrast .banner {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.high-contrast .w3_agile_banner_top {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.high-contrast .agile_phone_mail ul li {
+  color: #fff !important;
+}
+
+.high-contrast .agile_phone_mail ul li a {
+  color: #fff !important;
+}
+
+.high-contrast .flexslider {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.high-contrast .flexslider h3 {
+  color: #fff !important;
+}
+
+.high-contrast .flexslider p {
+  color: #fff !important;
+}
+
+.high-contrast .footer {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.high-contrast .footer a {
+  color: #fff !important;
+}
+
+.larger-text {
+  font-size: 1.2em !important;
+}
+
+.larger-text p,
+.larger-text li {
+  font-size: 1.2em !important;
+}
+
+.larger-text h1,
+.larger-text h2,
+.larger-text h3,
+.larger-text h4,
+.larger-text h5,
+.larger-text h6 {
+  font-size: 1.4em !important;
+}
