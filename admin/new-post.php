@@ -1,5 +1,5 @@
 
-<?php
+<?php 
 
     ob_start();
     require_once "functions/db.php";
@@ -71,11 +71,11 @@
                     </li>
                 </ul>
                 <ul class="nav navbar-top-links navbar-right pull-right">
-
+                    
                     <!-- /.dropdown -->
-
-
-
+                    
+                  
+                   
                     <li class="right-side-toggle"> <a class="waves-effect waves-light" href="javascript:void(0)"><i class="ti-settings"></i></a></li>
                     <!-- /.dropdown -->
                 </ul>
@@ -107,8 +107,8 @@
                     <li class="nav-small-cap m-t-10">--- Menu Principal</li>
                     <li> <a href="index.php" class="waves-effect"><i class="linea-icon linea-basic fa-fw" data-icon="v"></i> <span class="hide-menu"> Dashboard </a>
                     </li>
-
-
+                   
+                    
                    <li> <a href="#" class="waves-effect active"><i data-icon="&#xe00b;" class="linea-icon linea-basic fa-fw"></i> <span class="hide-menu">Artigos<span class="fa arrow"></span></span></a>
                         <ul class="nav nav-second-level">
                         <li><a href="posts.php">Todos as Postagens</a></li>
@@ -117,13 +117,13 @@
                             </li>
                         </ul>
                     </li>
-
+                   
                    <li><a href="inbox.php" class="waves-effect"><i data-icon=")" class="linea-icon linea-basic fa-fw"></i> <span class="hide-menu">Mensagens</span></a>
                     </li>
 
                     <li><a href="subscribers.php" class="waves-effect"><i data-icon="n" class="linea-icon linea-basic fa-fw"></i> <span class="hide-menu">Inscritos</span></a>
                     </li>
-
+                    
                      <li class="nav-small-cap">--- Outros</li>
                     <li> <a href="#" class="waves-effect"><i data-icon="H" class="linea-icon linea-basic fa-fw"></i> <span class="hide-menu">Acesso<span class="fa arrow"></span></span></a>
                         <ul class="nav nav-second-level">
@@ -131,12 +131,12 @@
               <li><a href="new-user.php">Criar Administrador</a></li>
               <li><a href="member.php">Aceitar Membro</a></li>
               <li><a href="del-member.php">Apagar Membro</a></li>
-
+                            
                         </ul>
                     </li>
-
+                    
                     <li><a href="login.php" class="waves-effect"><i class="icon-logout fa-fw"></i> <span class="hide-menu">Sair</span></a></li>
-
+                   
                 </ul>
             </div>
         </div>
@@ -147,7 +147,7 @@
                 <div class="row bg-title">
                     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
                         <h4 class="page-title"><?php echo $email;?></h4> </div>
-                    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12"> 
                         <ol class="breadcrumb">
                             <li><a href="#">Dashboard</a></li>
                             <li><a href="#">Postagens</a></li>
@@ -246,7 +246,7 @@
                                 <li><a href="javascript:void(0)" theme="purple-dark" class="purple-dark-theme">11</a></li>
                                 <li><a href="javascript:void(0)" theme="megna-dark" class="megna-dark-theme">12</a></li>
                             </ul>
-
+                           
                         </div>
                     </div>
                 </div>
@@ -348,16 +348,11 @@
                 }
                 return true;
             },
-          onFinish: function () {
-            var formData = $("#validation").serialize();
-            $.post("functions/new_post.php", formData)
-              .done(function(response) {
-                alert("Postagem criada com sucesso!");
-              })
-              .fail(function() {
-                alert("Erro ao criar postagem.");
-              });
-          }
+            onFinish: function() {
+                $.post("keep.php", $("#validation").serialize()).done(function() {
+                    alert("hiiii");
+                });
+            }
         });
         $('#accordion').wizard({
             step: '[data-toggle="collapse"]',

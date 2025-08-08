@@ -2,26 +2,34 @@
 <?php
 
     ob_start();
-    
-    // Incluir configuração centralizada da pasta admin
-    require_once __DIR__ . '/includes/config.php';
+    require_once "functions/db.php";
 
-    // Verificar autenticação com sessão segura
-    requireAuth('login.php');
+    // Initialize the session
 
-    $email = sanitizeOutput($_SESSION['email']);
+    session_start();
 
-    // Usar as funções do banco de dados configuradas
-    $posts = fetchMultiple("SELECT * FROM posts");
-    $contacts = fetchMultiple("SELECT * FROM contacts");
-    $subscribers = fetchMultiple("SELECT * FROM subscribers");
-    $comments = fetchMultiple("SELECT * FROM comments");
+    // If session variable is not set it will redirect to login page
 
-    // Contar registros
-    $postsCount = count($posts);
-    $contactsCount = count($contacts);
-    $subscribersCount = count($subscribers);
-    $commentsCount = count($comments);
+    if(!isset($_SESSION['email']) || empty($_SESSION['email'])){
+
+      header("location: login.php");
+
+      exit;
+    }
+
+    $email = $_SESSION['email'];
+
+    $sql_posts = "SELECT * FROM posts";
+    $query_posts = mysqli_query($connection, $sql_posts);
+
+    $sql_contacts = "SELECT * FROM contacts";
+    $query_contacts = mysqli_query($connection, $sql_contacts);
+
+    $sql_subscribers = "SELECT * FROM subscribers";
+    $query_subscribers = mysqli_query($connection, $sql_subscribers);
+
+    $sql_comments = "SELECT * FROM comments";
+    $query_comments = mysqli_query($connection, $sql_comments);
 ?>
 
 <!DOCTYPE html>
@@ -185,7 +193,7 @@
                                         <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="E" class="linea-icon linea-basic"></i>
                                             <h5 class="text-muted vb">Artigos Publicados</h5> </div>
                                         <div class="col-md-6 col-sm-6 col-xs-6">
-                                            <h3 class="counter text-right m-t-15 text-danger"><?php echo $postsCount;?></h3> </div>
+                                            <h3 class="counter text-right m-t-15 text-danger"><?php echo mysqli_num_rows($query_posts);?></h3> </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12">
                                             <div class="progress">
                                                 <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span class="sr-only">40% Complete (success)</span> </div>
@@ -198,7 +206,7 @@
                                         <div class="col-md-6 col-sm-6 col-xs-6"> <i class="linea-icon linea-basic" data-icon="&#xe01b;"></i>
                                             <h5 class="text-muted vb">Artigos Comentados</h5> </div>
                                         <div class="col-md-6 col-sm-6 col-xs-6">
-                                            <h3 class="counter text-right m-t-15 text-megna"><?php echo $commentsCount;?></h3> </div>
+                                            <h3 class="counter text-right m-t-15 text-megna"><?php echo mysqli_num_rows($query_comments);?></h3> </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12">
                                             <div class="progress">
                                                 <div class="progress-bar progress-bar-megna" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span class="sr-only">40% Complete (success)</span> </div>
@@ -211,7 +219,7 @@
                                         <div class="col-md-6 col-sm-6 col-xs-6"> <i class="linea-icon linea-basic" data-icon="&#xe00b;"></i>
                                             <h5 class="text-muted vb">Mensagens</h5> </div>
                                         <div class="col-md-6 col-sm-6 col-xs-6">
-                                            <h3 class="counter text-right m-t-15 text-primary"><?php echo $contactsCount;?></h3> </div>
+                                            <h3 class="counter text-right m-t-15 text-primary"><?php echo mysqli_num_rows($query_contacts);?></h3> </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12">
                                             <div class="progress">
                                                 <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span class="sr-only">40% Complete (success)</span> </div>
@@ -224,7 +232,7 @@
                                         <div class="col-md-6 col-sm-6 col-xs-6"> <i class="linea-icon linea-basic" data-icon="&#xe016;"></i>
                                             <h5 class="text-muted vb">Inscritos</h5> </div>
                                         <div class="col-md-6 col-sm-6 col-xs-6">
-                                            <h3 class="counter text-right m-t-15 text-success"><?php echo $subscribersCount;?></h3> </div>
+                                            <h3 class="counter text-right m-t-15 text-success"><?php echo mysqli_num_rows($query_subscribers);?></h3> </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12">
                                             <div class="progress">
                                                 <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span class="sr-only">40% Complete (success)</span> </div>
@@ -246,30 +254,31 @@
                                 <div class="comment-body">
                                     <div class="mail-contnet">
                                       <?php
-                                             if (empty($comments)) {
+                                             if (mysqli_num_rows($query_comments)==0) {
                                                  echo "<i style='color:brown;'>There are no comments yet :( </i> ";
-                                             } else {
-                                                 $counter = 0;
-                                                 $max = 3;
+                                                    }
+                                                    else{
 
-                                                 foreach ($comments as $comment) {
-                                                     if ($counter >= $max) break;
-                                                     
-                                                     $blogid = $comment["blogid"];
-                                                     $post = fetchSingle("SELECT * FROM posts WHERE id = ?", [$blogid]);
-                                                     
-                                                     if ($post) {
-                                                         echo '                
-                                                         <b>'.htmlspecialchars($comment["name"]).'</b>
-                                                         <h5>Blog Title : '.htmlspecialchars($post["title"]).'</h5>
-                                                         <span class="mail-desc">
-                                                         '.htmlspecialchars($comment["comment"]).'
-                                                         </span> <span class="time pull-right">'.htmlspecialchars($comment["date"]).'</span>
-                                                         ';
-                                                         $counter++;
-                                                     }
-                                                 }
-                                             }
+                                    $counter = 0;
+                                    $max = 3;
+
+                                    while ($row2 = mysqli_fetch_array($query_comments)) {
+                                    $blogid = $row2["blogid"];
+                                       $sql2 = "SELECT * FROM posts WHERE id='$blogid'";
+                                            $query2 = mysqli_query($connection, $sql2);
+
+                                       while (($row3 = mysqli_fetch_assoc($query2)) and ($counter < $max)) {
+                                        
+                                    echo '                
+                                    
+                                        <b>'.$row2["name"].'</b>
+                                        <h5>Blog Title : '.$row3["title"].'</h5>
+                                        <span class="mail-desc">
+                                        '.$row2["comment"].'
+                                        </span> <span class="time pull-right">'.$row2["date"].'</span>
+                                    ';
+                                    $counter++;
+                                        } } }
                                     ?>
                                     <hr>
                                      <a href="comments.php" class="btn btn-info btn-rounded btn-outline hidden-xs hidden-sm waves-effect waves-light">Ver Todos os Comentários</a>
@@ -299,46 +308,47 @@
                                     <p>Artigos Postados</p>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 ">
-                                    <h1 class="text-right text-success m-t-20"><?php echo $postsCount;?></h1> </div>
+                                    <h1 class="text-right text-success m-t-20"><?php echo mysqli_num_rows($query_posts);?></h1> </div>
                             </div>
                             <div class="table-responsive">
                                 <table class="table ">
 
                                     <?php
-                                             if (empty($posts)) {
+                                             if (mysqli_num_rows($query_posts)==0) {
                                                  echo "<i style='color:brown;'>No Posts Yet :( Upload Company's first blog post today! </i> ";
-                                             } else {
-                                                 echo '
-                                                      <thead>
-                                                     <tr>
-                                                         <th>TíTULO</th>
-                                                         <th>DATA</th>
-                                                         <th>COMENTÁRIOS</th>
-                                                     </tr>
-                                                 </thead>
-                                                 <tbody>
-                                                 ';
-                                                 
-                                                 $counter = 0;
-                                                 $max = 3;
+                                                    }
+                                                    else
+                                                        
+                                                    {
+                                                        echo '
+                                                             <thead>
+                                                            <tr>
+                                                                <th>TíTULO</th>
+                                                                <th>DATA</th>
+                                                                <th>COMENTÁRIOS</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        ';
+                                                    }
+                                                        $counter = 0;
+                                                        $max = 3;
 
-                                                 foreach ($posts as $post) {
-                                                     if ($counter >= $max) break;
-                                                     
-                                                     $postid = $post["id"];
-                                                     $commentsForPost = fetchMultiple("SELECT * FROM comments WHERE blogid = ?", [$postid]);
-                                                     $commentsCount = count($commentsForPost);
+                                                while (($row = mysqli_fetch_array($query_posts)) and ($counter < $max) )
+                                                {
+                                                    $postid = $row["id"];
+                                                    $sql2 = "SELECT * FROM comments WHERE blogid=$postid";
+                                                    $query2 = mysqli_query($connection, $sql2);
 
-                                                     echo '
-                                               <tr>
-                                                   <td class="txt-oflo">'.htmlspecialchars($post["title"]).'</td>
-                                                  <td class="txt-oflo">'.htmlspecialchars($post["date"]).'</td>
-                                                   <td><span class="text-success">'.$commentsCount.'</span></td>
-                                               </tr>
-                                           ';
-                                           $counter++;
-                                                 }
-                                             }
+                                              echo '
+                                        <tr>
+                                            <td class="txt-oflo">'.$row["title"].'</td>
+                                           <td class="txt-oflo">'.$row["date"].'</td>
+                                            <td><span class="text-success">'.mysqli_num_rows($query2).'</span></td>
+                                        </tr>
+                                    ';
+                                    $counter++;
+                                        }
                                     ?>
 
                                     </tbody>

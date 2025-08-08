@@ -1,13 +1,21 @@
 <?php
 ob_start();
+session_start();
 
-// Incluir configuração centralizada da pasta admin
-require_once __DIR__ . '/includes/config.php';
+// DATABASE CONNECTION
+$db['db_host'] = 'localhost';
+$db['db_user'] = 'root';
+$db['db_pass'] = '';
+$db['db_name'] = 'labagua';
 
-// Configurar sessão segura
-setupSecureSession();
+foreach ($db as $key => $value) {
+    define(strtoupper($key), $value);
+}
 
-// A conexão $connection já está disponível através do config.php
+$connection = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, 3306);
+if (!$connection) {
+    die("Cannot Establish A Secure Connection To The Host Server At The Moment!");
+}
 
 // Define variables and initialize with empty values
 $email = $password = "";
@@ -15,39 +23,25 @@ $email_err = $password_err = "";
 
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    // Verificar rate limiting (proteção contra força bruta)
-    if (!checkRateLimit('login_attempt', 5, 300)) {
-        $email_err = 'Muitas tentativas de login. Tente novamente em 5 minutos.';
-        logSecurity('Login rate limit exceeded', 'WARNING');
-    } else {
-        // Check if email is empty
-        if (empty(trim($_POST["email"]))) {
-            $email_err = 'Por favor, insira um endereço de e-mail.';
-        } else {
-            $email = sanitizeInput(trim($_POST["email"]));
-            // Validar formato do email
-            if (!validateEmail($email)) {
-                $email_err = 'Formato de e-mail inválido.';
-            }
-        }
 
-        // Check if password is empty
-        if (empty(trim($_POST['password']))) {
-            $password_err = 'Por favor, digite sua senha.';
-        } else {
-            $password = trim($_POST['password']);
-            // Validação básica de senha
-            if (strlen($password) < 6) {
-                $password_err = 'A senha deve ter pelo menos 6 caracteres.';
-            }
-        }
+    // Check if email is empty
+    if (empty(trim($_POST["email"]))) {
+        $email_err = 'Por favor, insira um endereço de e-mail.';
+    } else {
+        $email = trim($_POST["email"]);
+    }
+
+    // Check if password is empty
+    if (empty(trim($_POST['password']))) {
+        $password_err = 'Por favor, digite sua senha.';
+    } else {
+        $password = trim($_POST['password']);
     }
 
     // Validate credentials
     if (empty($email_err) && empty($password_err)) {
-        // Prepare a select statement (pegar id e nome também para sessão)
-        $sql = "SELECT id, name, email, password FROM admin WHERE email = ?";
+        // Prepare a select statement
+        $sql = "SELECT email, password FROM admin WHERE email = ?";
 
         if ($stmt = mysqli_prepare($connection, $sql)) {
             // Bind variables to the prepared statement as parameters
@@ -63,27 +57,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Check if email exists, if yes then verify password
                 if (mysqli_stmt_num_rows($stmt) == 1) {
                     // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $admin_id, $admin_name, $email, $hashed_password);
+                    mysqli_stmt_bind_result($stmt, $email, $hashed_password);
                     if (mysqli_stmt_fetch($stmt)) {
                         if (password_verify($password, $hashed_password)) {
                             // Password is correct, so start a new session and save the email to the session
-                            session_regenerate_id(true); // Regenerar ID da sessão por segurança
                             $_SESSION['email'] = $email;
-                            $_SESSION['admin_id'] = $admin_id;
-                            $_SESSION['admin_name'] = $admin_name;
-                            $_SESSION['last_activity'] = time();
-                            
-                            // Log de login bem-sucedido
-                            logSecurity("Successful login for user: $email", 'INFO');
-                            
                             header("Location: index.php");
                             exit(); // Ensure no further code is executed after redirection
                         } else {
                             // Display an error message if password is not valid
                             $password_err = 'A senha que você digitou não é válida. Por favor, tente novamente.';
-                            
-                            // Log de tentativa de login falhada
-                            logSecurity("Failed login attempt for email: $email", 'WARNING');
                         }
                     }
                 } else {
@@ -142,8 +125,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="white-box">
                 <form class="form-horizontal form-material" id="loginform" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                     <h3 class="box-title m-b-20">Entrar</h3>
-                                            <p style="color:red;"><?php echo sanitizeOutput($email_err); ?></p>
-                        <p style="color:red;"><?php echo sanitizeOutput($password_err); ?></p>
+                    <p style="color:red;"><?php echo $email_err; ?></p>
+                    <p style="color:red;"><?php echo $password_err; ?></p>
                     <div class="form-group ">
                         <div class="col-xs-12">
                             <input class="form-control" type="email" name="email" required="" placeholder="Email">
