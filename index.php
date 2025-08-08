@@ -51,57 +51,23 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Header -->
-    <header class="header" id="header">
-        <nav class="navbar">
-            <div class="container">
-                <div class="nav-brand">
-                    <div class="logo">
-                        <div class="logo-icon">
-                            <i class="fas fa-tint"></i>
-                            <i class="fas fa-flask"></i>
-                        </div>
-                        <span class="logo-text">LabÁgua</span>
-                    </div>
-                </div>
-                
-                <div class="nav-menu" id="nav-menu">
-                    <ul class="nav-list">
-                        <li class="nav-item"><a href="#inicio" class="nav-link">Início</a></li>
-                        <li class="nav-item"><a href="#servicos" class="nav-link">Serviços</a></li>
-                        <li class="nav-item"><a href="#cursos" class="nav-link">Cursos</a></li>
-                        <li class="nav-item"><a href="#sobre" class="nav-link">Sobre</a></li>
-                        <li class="nav-item"><a href="articles.php" class="nav-link">Artigos</a></li>
-                        <li class="nav-item"><a href="members.php" class="nav-link">Equipe</a></li>
-                        <li class="nav-item"><a href="admin/login.php" class="nav-link" target="_blank">Admin</a></li>
-                        <li class="nav-item"><a href="#contato" class="nav-link">Contato</a></li>
-                    </ul>
-                    <div class="nav-cta">
-                        <a href="#contato" class="btn btn-primary">Solicitar Teste</a>
-                    </div>
-                </div>
-                
-                <div class="nav-toggle" id="nav-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <?php include_once 'components/header/header.php'; ?>
 
     <!-- Hero Section -->
     <main id="main-content">
     <section class="hero" id="inicio">
         <div class="hero-background">
-            <div class="hero-overlay"></div>
+            <div class="hero-overlay">
+                <img src="images/wallpaper1.jpg" alt="LabÁgua">
+            </div>
         </div>
         <div class="container">
             <div class="hero-content" data-aos="fade-up">
                 <h1 class="hero-title">
-                    Análise Precisa de Água.<br>
-                    <span class="text-gradient">Resultados Confiáveis.</span>
+                    <span class="hero-main-text">Análise Precisa de Água</span><br>
+                    <span class="text-gradient">Resultados Confiáveis</span>
                 </h1>
                 <p class="hero-subtitle">
                     Testes laboratoriais profissionais para avaliação da qualidade da água residencial, comercial e industrial
@@ -1039,75 +1005,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <div class="logo">
-                            <div class="logo-icon">
-                                <i class="fas fa-tint"></i>
-                                <i class="fas fa-flask"></i>
-                            </div>
-                            <span class="logo-text">LabÁgua</span>
-                        </div>
-                    </div>
-                    <p class="footer-description">
-                        Líder em análise profissional de água no Brasil. Precisão, confiabilidade e excelência em cada teste.
-                    </p>
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-section">
-                    <h3 class="footer-title">Serviços</h3>
-                    <ul class="footer-links">
-                        <li><a href="#servicos">Análise Residencial</a></li>
-                        <li><a href="#servicos">Análise Comercial</a></li>
-                        <li><a href="#servicos">Análise Industrial</a></li>
-                        <li><a href="#precos">Planos e Preços</a></li>
-                        <li><a href="#contato">Teste de Emergência</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3 class="footer-title">Cursos</h3>
-                    <ul class="footer-links">
-                        <li><a href="#cursos">Certificado Básico</a></li>
-                        <li><a href="#cursos">Técnicas Avançadas</a></li>
-                        <li><a href="#cursos">Gestão de Segurança</a></li>
-                        <li><a href="#contato">Inscrições</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3 class="footer-title">Empresa</h3>
-                    <ul class="footer-links">
-                        <li><a href="#sobre">Sobre Nós</a></li>
-                        <li><a href="#sobre">Certificações</a></li>
-                        <li><a href="#contato">Contato</a></li>
-                        <li><a href="#">Política de Privacidade</a></li>
-                        <li><a href="#">Termos de Uso</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="footer-copyright">
-                    <p>&copy; 2024 LabÁgua. Todos os direitos reservados.</p>
-                </div>
-                <div class="footer-certifications">
-                    <span class="cert-badge">ISO 17025</span>
-                    <span class="cert-badge">ANVISA</span>
-                    <span class="cert-badge">EPA</span>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php include 'components/footer/footer.php'; ?>
 
     <!-- Back to Top Button -->
     <button id="backToTop" class="back-to-top" aria-label="Voltar ao topo">

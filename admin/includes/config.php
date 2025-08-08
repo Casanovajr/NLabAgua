@@ -1,4 +1,5 @@
 <?php
+session_start();
 /**
  * Configuração Centralizada para Admin
  * LabÁgua - Sistema de Análise de Água
@@ -19,7 +20,7 @@ require_once ADMIN_PATH . 'functions/db.php';
 require_once ROOT_PATH . 'security.php';
 
 // Configurações de sessão
-session_start();
+
 
 // Configurações de timezone
 date_default_timezone_set('America/Sao_Paulo');
