@@ -118,11 +118,11 @@
                     require_once "admin/functions/db.php";
                     // Buscar todos os membros (ordem: aprovados primeiro). Se falhar (coluna 'status' ausente), usa fallback por nome.
                     $hasStatus = true;
-                    $sql = "SELECT id, nome, cargo, especialidade, lattes, foto, status FROM membros ORDER BY status = 'aprovado' DESC, nome ASC";
+                    $sql = "SELECT id, nome, cargo, lattes, foto, status FROM membros ORDER BY (status = 'aprovado') DESC, nome ASC";
                     $result = mysqli_query($connection, $sql);
                     if ($result === false) {
                         $hasStatus = false;
-                        $sql = "SELECT id, nome, cargo, especialidade, lattes, foto FROM membros ORDER BY nome ASC";
+                        $sql = "SELECT id, nome, cargo, lattes, foto FROM membros ORDER BY nome ASC";
                         $result = mysqli_query($connection, $sql);
                     }
                     // Debug não intrusivo (comentário HTML): contagem de registros e erro da consulta, se houver
