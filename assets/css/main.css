@@ -466,20 +466,19 @@ a:hover {
     color: var(--primary-color);
     letter-spacing: -0.02em;
 }
-
-            .logo-icon {
-                position: relative;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 150px;
-                height: 70px;
-                background: transparent;
-                border-radius: var(--radius-lg);
-                /* box-shadow: var(--shadow-card); */
-                padding: 6px;
-                /* border: 1px solid var(--gray-200); */
-            }
+.logo-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 70px;
+    background: transparent;
+    border-radius: var(--radius-lg);
+    /* box-shadow: var(--shadow-card); */
+    padding: 6px;
+    /* border: 1px solid var(--gray-200); */
+    }
 
 .logo-icon img {
     width: 100%;
@@ -1685,6 +1684,8 @@ a:hover {
 }
 
 /* ===== FOOTER ===== */
+
+
 .footer {
     background: linear-gradient(135deg, var(--gray-900) 0%, var(--primary-dark) 100%);
     color: var(--gray-300);
@@ -1703,10 +1704,18 @@ a:hover {
 }
 
 .footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-8);
-    margin-bottom: var(--spacing-12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.footer-options {
+    margin-top: 30px;
+    display: flex;
+    gap: 40px; 
+    justify-content: space-around; 
+    align-items: flex-start; 
 }
 
 .footer-section h3 {
@@ -1716,6 +1725,8 @@ a:hover {
 
 .footer-logo .logo {
     margin-bottom: var(--spacing-4);
+    flex: 1 1 0;
+    text-align: center;
 }
 
 .footer-logo .logo-text {
@@ -1725,11 +1736,14 @@ a:hover {
 .footer-description {
     margin-bottom: var(--spacing-6);
     line-height: 1.6;
+    flex: 1 1 0;
+    text-align: center;
 }
 
 .social-links {
     display: flex;
     gap: var(--spacing-4);
+    text-align: center;
 }
 
 .social-link {

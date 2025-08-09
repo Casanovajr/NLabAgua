@@ -58,10 +58,9 @@
                 <div class="nav-brand">
                     <div class="logo">
                         <div class="logo-icon">
-                            <i class="fas fa-tint"></i>
-                            <i class="fas fa-flask"></i>
+                            <img src="images/LabAguaLogo.png" alt="LabÁgua">
                         </div>
-                        <span class="logo-text">LabÁgua</span>
+                        
                     </div>
                 </div>
                 

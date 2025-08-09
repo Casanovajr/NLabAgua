@@ -5,7 +5,7 @@
                 <div class="nav-brand">
                     <div class="logo">
                         <div class="logo-icon">
-                            <img src="images/LabAguaLogo.png" alt="LabÁgua">
+                            <img src="assets/images/LabAguaLogo.png" alt="LabÁgua">
                         </div>
                     </div>
                 </div>

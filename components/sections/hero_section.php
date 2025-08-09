@@ -1,7 +1,7 @@
 <section class="hero" id="inicio">
         <div class="hero-background">
             <div class="hero-overlay">
-                <img src="images/wallpaper1.jpg" alt="LabÁgua">
+                <img src="assets/images/wallpaper1.jpg" alt="LabÁgua">
             </div>
         </div>
         <div class="container">
