@@ -19,9 +19,13 @@
       if(!$connection){
           die("Cannot Establish A Secure Connection To The Host Server At The Moment!");
       }
+      // Ensure UTF-8 MB4 for emojis and extended chars
+      @mysqli_set_charset($connection, 'utf8mb4');
+      @mysqli_query($connection, "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
 
       try{
-          $db = new PDO('mysql:dbhost=localhost;dbname=labagua;charset=utf8','root','');
+          $db = new PDO('mysql:dbhost=localhost;dbname=labagua;charset=utf8mb4','root','');
+          $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
       }

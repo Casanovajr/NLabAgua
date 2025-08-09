@@ -190,8 +190,9 @@
                                         <div class="wizard-pane" role="tabpanel">
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Conteúdo</label>
-                                                <div class="col-xs-5">
-                                                    <textarea class="form-control" name="content" required > </textarea>
+                                                <div class="col-xs-9">
+                                                    <textarea class="form-control" name="content" id="postContent" rows="12" required></textarea>
+                                                    <p class="help-block">Use o editor para formatar o texto e inserir imagens.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -280,6 +281,82 @@
     <script src="../plugins/bower_components/jquery-wizard-master/libs/formvalidation/bootstrap.min.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="js/custom.min.js"></script>
+    
+    <!-- TinyMCE (Editor de Texto) - usando sua API Key (v8) -->
+    <script src="https://cdn.tiny.cloud/1/4hq9482o90l00yr6yyqnzzrx2fnsgqpgn7o7srjia7qgn5a5/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+    <script>
+      tinymce.init({
+        selector: 'textarea[name=content]',
+        height: 480,
+        menubar: false,
+        branding: false,
+        // Incluímos 'image' para upload local e mantivemos plugins úteis
+        plugins: [
+          'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+          'image', 'quickbars',
+          // Premium/trial (opcional)
+          'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+        ],
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | alignleft aligncenter alignright alignjustify lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | preview',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Admin',
+        mergetags_list: [
+          { value: 'First.Name', title: 'First Name' },
+          { value: 'Email', title: 'Email' }
+        ],
+        // Opções de imagem: permitir ajustar largura/altura e classes pré-definidas
+        image_dimensions: true,
+        image_advtab: true,
+        image_title: true,
+        image_caption: true,
+        image_class_list: [
+          { title: 'Padrão (auto)', value: '' },
+          { title: 'Pequena (25%)', value: 'img-sm' },
+          { title: 'Média (50%)', value: 'img-md' },
+          { title: 'Grande (100%)', value: 'img-lg' }
+        ],
+        // Upload local para imagens inseridas pelo botão "image"
+        automatic_uploads: true,
+        images_upload_url: 'functions/upload_image.php',
+        images_upload_credentials: true,
+        file_picker_types: 'image',
+        paste_data_images: true,
+        convert_urls: false,
+        // Evita blobs locais na persistência e força upload como base64 se necessário
+        images_reuse_filename: false,
+        images_upload_base_path: '/labag',
+        images_upload_handler: function (blobInfo, progress) {
+          return new Promise(function(resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'functions/upload_image.php');
+            xhr.onload = function() {
+              if (xhr.status < 200 || xhr.status >= 300) {
+                reject('HTTP Error: ' + xhr.status);
+                return;
+              }
+              try {
+                var json = JSON.parse(xhr.responseText);
+                if (json && json.location) {
+                  resolve(json.location);
+                } else {
+                  reject('Resposta inválida do servidor');
+                }
+              } catch (e) {
+                reject('Falha ao parsear resposta');
+              }
+            };
+            xhr.onerror = function () { reject('Erro de rede durante upload'); };
+            var formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.filename());
+            xhr.send(formData);
+          });
+        },
+        content_style: 'body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; font-size:14px } img { max-width:100%; height:auto; } img.img-sm{width:25%;height:auto;} img.img-md{width:50%;height:auto;} img.img-lg{width:100%;height:auto;}',
+        setup: function (editor) {
+          editor.on('change', function () { editor.save(); });
+        }
+      });
+    </script>
     <script type="text/javascript">
     (function() {
         $('#exampleBasic').wizard({
@@ -349,9 +426,29 @@
                 return true;
             },
             onFinish: function() {
-                $.post("keep.php", $("#validation").serialize()).done(function() {
-                    alert("hiiii");
-                });
+                // Faz upload de quaisquer imagens blob pendentes do TinyMCE
+                if (window.tinymce && tinymce.activeEditor) {
+                    tinymce.activeEditor.uploadImages().then(function() {
+                        var form = document.getElementById('validation');
+                        if (form) {
+                            if (typeof form.submit === 'function') {
+                                form.submit();
+                            } else {
+                                HTMLFormElement.prototype.submit.call(form);
+                            }
+                        }
+                    }).catch(function() {
+                        var form = document.getElementById('validation');
+                        if (form) {
+                            HTMLFormElement.prototype.submit.call(form);
+                        }
+                    });
+                } else {
+                    var form = document.getElementById('validation');
+                    if (form) {
+                        HTMLFormElement.prototype.submit.call(form);
+                    }
+                }
             }
         });
         $('#accordion').wizard({

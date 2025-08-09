@@ -1,0 +1,9 @@
+[2025-08-09 22:53:26] request method=POST, content-length=1747910
+[2025-08-09 22:53:26] detected mime=image/jpeg, client type=image/jpeg
+[2025-08-09 22:53:26] upload success -> /labag/uploads/3758d772bf18f2b2_WhatsAppImage2025-04-28at1921161.jpeg
+[2025-08-09 22:55:35] request method=POST, content-length=244987
+[2025-08-09 22:55:35] detected mime=image/png, client type=image/png
+[2025-08-09 22:55:35] upload success -> /labag/uploads/69fc6ceafabc9185_ChatGPTImage14deabrde202510_38_292.png
+[2025-08-09 22:56:42] request method=POST, content-length=244987
+[2025-08-09 22:56:42] detected mime=image/png, client type=image/png
+[2025-08-09 22:56:42] upload success -> /labag/uploads/f73f8bf76c7031a8_ChatGPTImage14deabrde202510_38_292.png
