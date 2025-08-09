@@ -1,3 +1,37 @@
+<?php
+require_once 'admin/functions/db.php';
+
+// Garantir exceptions do MySQLi para capturar erros (ex.: emojis sem utf8mb4)
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+@mysqli_set_charset($connection, 'utf8mb4');
+
+$postId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+$errorMessage = null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_comment') {
+    $nameInput = trim($_POST['name'] ?? '');
+    $commentInput = trim($_POST['comment'] ?? '');
+
+    if ($postId > 0 && $nameInput !== '' && $commentInput !== '') {
+        // Limitar tamanhos razoáveis para evitar problemas inesperados
+        if (mb_strlen($nameInput) > 200) { $nameInput = mb_substr($nameInput, 0, 200); }
+        if (mb_strlen($commentInput) > 5000) { $commentInput = mb_substr($commentInput, 0, 5000); }
+        try {
+            $stmt = mysqli_prepare($connection, 'INSERT INTO comments (name, comment, blogid, date) VALUES (?, ?, ?, NOW())');
+            mysqli_stmt_bind_param($stmt, 'ssi', $nameInput, $commentInput, $postId);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+            header('Location: article.php?id=' . $postId . '#comments');
+            exit;
+        } catch (Throwable $e) {
+            error_log('comment_insert_error: ' . $e->getMessage());
+            $errorMessage = 'Não foi possível salvar seu comentário. Tente remover emojis raros ou tente novamente.';
+        }
+    } else {
+        $errorMessage = 'Preencha seu nome e comentário.';
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -88,44 +122,20 @@
     </header>
 
     <?php
-    require_once 'admin/functions/db.php';
-
-    $postId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
     $post = null;
-    $errorMessage = null;
-
     if ($postId > 0) {
         // Busca o post
         $postQuery = mysqli_query($connection, "SELECT id, title, author, content, date FROM posts WHERE id = " . $postId . " LIMIT 1");
         if ($postQuery && mysqli_num_rows($postQuery) === 1) {
             $post = mysqli_fetch_assoc($postQuery);
         } else {
-            $errorMessage = 'Artigo não encontrado.';
-        }
-
-        // Inserção de comentário
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_comment') {
-            $nameInput = trim($_POST['name'] ?? '');
-            $commentInput = trim($_POST['comment'] ?? '');
-
-            if ($nameInput !== '' && $commentInput !== '') {
-                $stmt = mysqli_prepare($connection, 'INSERT INTO comments (name, comment, blogid, date) VALUES (?, ?, ?, NOW())');
-                if ($stmt) {
-                    mysqli_stmt_bind_param($stmt, 'ssi', $nameInput, $commentInput, $postId);
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_close($stmt);
-                    header('Location: article.php?id=' . $postId . '#comments');
-                    exit;
-                }
-            } else {
-                $errorMessage = 'Preencha seu nome e comentário.';
-            }
+            $errorMessage = $errorMessage ?: 'Artigo não encontrado.';
         }
     } else {
-        $errorMessage = 'Artigo inválido.';
+        $errorMessage = $errorMessage ?: 'Artigo inválido.';
     }
 
-    // Buscar comentários (mesmo com erro, não tenta se post inválido)
+    // Buscar comentários
     $comments = [];
     if ($postId > 0) {
         $commentsQuery = mysqli_query($connection, 'SELECT id, name, comment, date FROM comments WHERE blogid = ' . $postId . ' ORDER BY date DESC');
