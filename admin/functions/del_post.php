@@ -8,9 +8,10 @@ if (isset($_POST["id"])) {
 
 	$id = $_POST["id"];
 
-	$sql = "DELETE posts, comments FROM posts INNER JOIN comments WHERE posts.id=comments.blogid and posts.id=?";
+    // Apaga o post e possíveis comentários associados, mesmo que não existam comentários
+    $sql = "DELETE posts, comments FROM posts LEFT JOIN comments ON comments.blogid = posts.id WHERE posts.id = ?";
 
-$stmt = $db->prepare($sql);
+    $stmt = $db->prepare($sql);
 
 
     try {

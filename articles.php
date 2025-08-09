@@ -114,9 +114,7 @@
             <div class="container">
                 <?php
                 try {
-    // Usar a configuração da pasta admin
-    require_once "admin/config.php";
-                    
+                    require_once "admin/functions/db.php";
                     $sql = 'SELECT * FROM posts ORDER BY date DESC';
                     $query = mysqli_query($connection, $sql);
                 } catch (Exception $e) {
@@ -130,23 +128,20 @@
                         echo '<div class="col-12 text-center" style="grid-column: 1 / -1;">
                                 <div class="empty-state">
                                     <i class="fas fa-newspaper" style="font-size: 4rem; color: var(--gray-400); margin-bottom: var(--spacing-4);"></i>
-                                    <h3 style="color: var(--gray-600); margin-bottom: var(--spacing-2);">Nenhum artigo publicado ainda</h3>
-                                    <p style="color: var(--gray-500);">Em breve publicaremos novos conteúdos técnicos e informativos sobre qualidade da água.</p>
+                                    <h3 style="color: var(--gray-600); margin-bottom: var(--spacing-2);">Desculpe, ainda não há postagens :( Em breve postaremos novos conteúdos!</h3>
                                 </div>
                               </div>';
                     } else {
                         while ($row = mysqli_fetch_array($query)) {
                             $excerpt = substr(strip_tags($row["content"]), 0, 200) . '...';
-                            $date = date('d/m/Y', strtotime($row["date"]));
-                            
                             echo '<article class="article-card">
                                     <h2 class="article-title">
-                                        <a href="labagua/single.php?id=' . $row["id"] . '">' . htmlspecialchars($row["title"]) . '</a>
+                                        <a href="article.php?id=' . $row["id"] . '">' . htmlspecialchars($row["title"]) . '</a>
                                     </h2>
                                     <p class="article-excerpt">' . htmlspecialchars($excerpt) . '</p>
                                     <div class="article-meta">
                                         <span class="article-author">' . htmlspecialchars($row["author"]) . '</span>
-                                        <span class="article-date">' . $date . '</span>
+                                        <span class="article-date">' . htmlspecialchars($row["date"]) . '</span>
                                     </div>
                                   </article>';
                         }

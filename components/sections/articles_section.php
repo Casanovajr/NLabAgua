@@ -7,42 +7,32 @@
             <div class="articles-grid" data-aos="fade-up" data-aos-delay="100">
                 <?php
                 try {
-                    // Usar a configuração da pasta admin
-                    if (file_exists('admin/config.php')) {
-                        require_once 'admin/config.php';
-                        
-                        $sql = 'SELECT * FROM posts ORDER BY date DESC LIMIT 3';
-                        $query = mysqli_query($connection, $sql);
-                        
-                        if ($query && mysqli_num_rows($query) > 0) {
-                            while ($row = mysqli_fetch_array($query)) {
-                                $excerpt = substr(strip_tags($row["content"]), 0, 150) . '...';
-                                $date = date('d/m/Y', strtotime($row["date"]));
-                                
-                                echo '<article class="article-card">
-                                        <h3 class="article-title">
-                                            <a href="articles.php?id=' . $row["id"] . '">' . htmlspecialchars($row["title"]) . '</a>
-                                        </h3>
-                                        <p class="article-excerpt">' . htmlspecialchars($excerpt) . '</p>
-                                        <div class="article-meta">
-                                            <span class="article-author">' . htmlspecialchars($row["author"]) . '</span>
-                                            <span class="article-date">' . $date . '</span>
-                                        </div>
-                                      </article>';
-                            }
-                        } else {
-                            echo '<div class="col-12 text-center" style="grid-column: 1 / -1;">
-                                    <p style="color: var(--gray-500);">Em breve publicaremos novos artigos técnicos sobre qualidade da água.</p>
-                                  </div>';
+                    require_once 'admin/functions/db.php';
+                    $sql = 'SELECT * FROM posts ORDER BY date DESC LIMIT 3';
+                    $query = mysqli_query($connection, $sql);
+
+                    if ($query && mysqli_num_rows($query) > 0) {
+                        while ($row = mysqli_fetch_array($query)) {
+                            $excerpt = substr(strip_tags($row["content"]), 0, 200) . '...';
+                            echo '<article class="article-card">
+                                    <h3 class="article-title">
+                                        <a href="article.php?id=' . $row["id"] . '">' . htmlspecialchars($row["title"]) . '</a>
+                                    </h3>
+                                    <p class="article-excerpt">' . htmlspecialchars($excerpt) . '</p>
+                                    <div class="article-meta">
+                                        <span class="article-author">' . htmlspecialchars($row["author"]) . '</span>
+                                        <span class="article-date">' . htmlspecialchars($row["date"]) . '</span>
+                                    </div>
+                                  </article>';
                         }
                     } else {
                         echo '<div class="col-12 text-center" style="grid-column: 1 / -1;">
-                                <p style="color: var(--gray-500);">Sistema em configuração. Em breve publicaremos novos artigos.</p>
+                                <p style="color: var(--gray-500);">Desculpe, ainda não há postagens :( Em breve postaremos novos conteúdos!</p>
                               </div>';
                     }
                 } catch (Exception $e) {
                     echo '<div class="col-12 text-center" style="grid-column: 1 / -1;">
-                            <p style="color: var(--gray-500);">Em breve publicaremos novos artigos técnicos sobre qualidade da água.</p>
+                            <p style="color: var(--gray-500);">Desculpe, ainda não há postagens :( Em breve postaremos novos conteúdos!</p>
                           </div>';
                 }
                 ?>
