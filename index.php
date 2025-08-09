@@ -34,6 +34,9 @@
     <main id="main-content">
         <?php include_once 'components/sections/hero_section.php'; ?>
 
+        <!-- Articles Section -->
+        <?php include_once 'components/sections/articles_section.php'; ?>
+
         <!-- Services Section -->
         <?php include_once 'components/sections/services_section.php'; ?>
 
@@ -48,9 +51,6 @@
 
         <!-- Process Section -->
         <?php include_once 'components/sections/process_section.php'; ?>
-
-        <!-- Articles Section -->
-        <?php include_once 'components/sections/articles_section.php'; ?>
 
 
     <!-- Members Section -->

@@ -964,7 +964,7 @@ function initializeLazyLoading() {
 // Preload critical resources
 function preloadCriticalResources() {
     const criticalImages = [
-        'assets/images/hero-bg.jpg',
+        'assets/images/wallpaper1.jpg',
         'assets/images/logo.png'
     ];
     
